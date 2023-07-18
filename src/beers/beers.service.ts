@@ -41,7 +41,6 @@ export class BeersService {
   }
 
   findOne(id: string) {
-    // return `This action returns a #${id} beer`;
     return data.find((element) => element._id === id);
   }
 
