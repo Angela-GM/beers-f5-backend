@@ -16,13 +16,13 @@ export class BeersController {
     return this.beersService.findAll();
   }
 
-  @Get(':random') //find random id
-  findRandom(@Param('id') id: string) {
-    return this.beersService.findRandom(+id);
+  @Get('random') //find random id
+  findRandom() {
+    return this.beersService.findRandom();
   }
 
   @Get(':id') //find by id
   findOne(@Param('id') id: string) {
-    return this.beersService.findOne(+id);
+    return this.beersService.findOne(id);
   }
 }

@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateBeerDto } from './dto/create-beer.dto';
-import { beers } from '../../data/data';
+import * as data from '../../data/data.json';
+import { Beer } from './entities/beer.entity';
 
 @Injectable()
 export class BeersService {
@@ -20,38 +21,31 @@ export class BeersService {
   }
 
   create(createBeerDto: CreateBeerDto) {
-    // Generar un nuevo ID para la cerveza
-    const newBeerId = this._idGenerator();
-
-    // Crear un nuevo objeto de cerveza con el ID generado y los datos proporcionados
-    const newBeer: CreateBeerDto = {
-      _id: newBeerId,
+    const id = this._idGenerator();
+    const newBeer: Beer = {
+      _id: id,
       ...createBeerDto,
       image_url: '',
       expireAt: '',
       __v: 0,
     };
+    if (typeof createBeerDto.attenuation_level !== 'number')
+      throw new InternalServerErrorException();
 
-    // Agregar la nueva cerveza al arreglo de cervezas existentes
-    beers.push(newBeer);
-
-    // Devolver la cerveza recién creada
-    return newBeer;
+    data.push(newBeer);
+    return data.find((e) => e._id === id);
   }
 
   findAll() {
-    return beers;
+    return data;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} beer`;
+  findOne(id: string) {
+    // return `This action returns a #${id} beer`;
+    return data.find((element) => element._id === id);
   }
 
-  update(id: number, updateBeerDto: UpdateBeerDto) {
-    return `This action updates a #${id} beer`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} beer`;
+  findRandom() {
+    return data[this._rndm(data)];
   }
 }
